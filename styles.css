@@ -658,6 +658,33 @@ input[type='range'] {
   padding-inline: 0;
 }
 
+.touch-resize-control {
+  align-items: center;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+}
+
+.resize-button {
+  align-items: center;
+  background: #151a22;
+  border: 0;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  font-size: 26px;
+  font-weight: 900;
+  height: 52px;
+  place-items: center;
+  touch-action: manipulation;
+  width: 52px;
+}
+
+.resize-button:active {
+  background: var(--green);
+}
+
 .toggle-row {
   display: grid;
   gap: 10px;

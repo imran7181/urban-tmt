@@ -103,6 +103,7 @@ const state = {
   accent: '#e53935',
   showDealerCode: true,
   dealerLogo: null,
+  dealerLogoScale: 1,
 };
 
 let posters = [];
@@ -122,6 +123,9 @@ const downloadPreview = document.getElementById('downloadPreview');
 const selectedPosterName = document.getElementById('selectedPosterName');
 const dealerLogoInput = document.getElementById('dealerLogo');
 const dealerLogoPreview = document.getElementById('dealerLogoPreview');
+const dealerLogoScaleInput = document.getElementById('dealerLogoScale');
+const logoSizeDown = document.getElementById('logoSizeDown');
+const logoSizeUp = document.getElementById('logoSizeUp');
 let currentDownloadHref = '';
 let currentPreviewUrl = '';
 let downloadWorkerReady = null;
@@ -425,8 +429,9 @@ function drawDealerBrandLine(ctx, data, baselineY) {
   const name = data.shopName || 'Your Store Name';
   let fontSize = 48;
   const hasLogo = Boolean(data.dealerLogo);
-  const logoWidth = hasLogo ? 330 : 0;
-  const logoHeight = hasLogo ? 128 : 0;
+  const logoScale = data.dealerLogoScale || 1;
+  const logoWidth = hasLogo ? 330 * logoScale : 0;
+  const logoHeight = hasLogo ? 128 * logoScale : 0;
   const logoCenterX = 270;
   const logoCenterY = baselineY + 30;
   const textCenterX = hasLogo ? 690 : CANVAS_WIDTH / 2;
@@ -480,6 +485,12 @@ function bindEvents() {
     renderPoster();
   });
   dealerLogoInput?.addEventListener('change', uploadDealerLogo);
+  dealerLogoScaleInput?.addEventListener('input', (event) => {
+    state.dealerLogoScale = Number(event.target.value) / 100;
+    renderPoster();
+  });
+  logoSizeDown?.addEventListener('click', () => resizeDealerLogo(-10));
+  logoSizeUp?.addEventListener('click', () => resizeDealerLogo(10));
   dealerLogoPreview?.addEventListener('click', (event) => {
     const removeButton = event.target.closest('[data-remove-logo]');
     if (!removeButton) return;
@@ -493,6 +504,16 @@ function bindEvents() {
   });
   document.getElementById('posterUpload')?.addEventListener('change', uploadPreparedPosters);
   document.getElementById('clearUploads')?.addEventListener('click', clearUploads);
+}
+
+function resizeDealerLogo(change) {
+  if (!dealerLogoScaleInput) return;
+  const min = Number(dealerLogoScaleInput.min);
+  const max = Number(dealerLogoScaleInput.max);
+  const nextValue = Math.max(min, Math.min(max, Number(dealerLogoScaleInput.value) + change));
+  dealerLogoScaleInput.value = nextValue;
+  state.dealerLogoScale = nextValue / 100;
+  renderPoster();
 }
 
 function uploadDealerLogo(event) {

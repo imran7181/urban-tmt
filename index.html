@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Urban TMT Dealer Poster Studio</title>
-    <link rel="stylesheet" href="styles.css?v=70" />
+    <link rel="stylesheet" href="styles.css?v=72" />
   </head>
   <body class="member-page">
     <header class="topbar">
@@ -113,6 +113,15 @@
               <div class="dealer-logo-preview" id="dealerLogoPreview">No logo selected</div>
             </div>
 
+            <div class="field-group logo-size-control">
+              <label for="dealerLogoScale">Logo size</label>
+              <div class="touch-resize-control">
+                <button class="resize-button" id="logoSizeDown" type="button" aria-label="Make logo smaller">-</button>
+                <input id="dealerLogoScale" type="range" min="70" max="170" value="100" />
+                <button class="resize-button" id="logoSizeUp" type="button" aria-label="Make logo bigger">+</button>
+              </div>
+            </div>
+
             <div class="field-row">
               <div class="field-group">
                 <label for="phone">Mobile number</label>
@@ -174,7 +183,7 @@
       <span>Prepared company posters with dealer store details added below.</span>
     </footer>
 
-    <script src="script.js?v=70"></script>
+    <script src="script.js?v=72"></script>
     <script>
       window.addEventListener('load', () => {
         const canvas = document.getElementById('posterCanvas');
