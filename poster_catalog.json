@@ -1,0 +1,42 @@
+[
+  {
+    "id": "poster-1778231911869",
+    "name": "1.jpg",
+    "category": "Product Poster",
+    "description": "Urban TMT admin uploaded poster.",
+    "accent": "#e53935",
+    "uploaded": true,
+    "artwork": "uploads/poster-1778231911869-1.jpg.jpg",
+    "imagePath": "uploads/poster-1778231911869-1.jpg.jpg"
+  },
+  {
+    "id": "poster-1778231904273",
+    "name": "3.jpg",
+    "category": "Product Poster",
+    "description": "Urban TMT admin uploaded poster.",
+    "accent": "#e53935",
+    "uploaded": true,
+    "artwork": "uploads/poster-1778231904273-3.jpg.jpg",
+    "imagePath": "uploads/poster-1778231904273-3.jpg.jpg"
+  },
+  {
+    "id": "poster-1778231803561",
+    "name": "Urban TMT",
+    "category": "Product Poster",
+    "description": "Urban TMT admin uploaded poster.",
+    "accent": "#e53935",
+    "uploaded": true,
+    "artwork": "uploads/poster-1778231803561-Urban-TMT.jpg",
+    "imagePath": "uploads/poster-1778231803561-Urban-TMT.jpg"
+  },
+  {
+    "id": "poster-1778231767111",
+    "name": "Vishu Poster",
+    "category": "Product Poster",
+    "description": "Urban TMT admin uploaded poster.",
+    "accent": "#e53935",
+    "uploaded": true,
+    "artwork": "uploads/poster-1778231767111-Vishu-Poster.jpg",
+    "imagePath": "uploads/poster-1778231767111-Vishu-Poster.jpg"
+  }
+]

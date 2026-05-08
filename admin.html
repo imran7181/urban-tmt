@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urban TMT Admin Panel</title>
+    <link rel="stylesheet" href="styles.css?v=49" />
+  </head>
+  <body class="admin-page">
+    <header class="topbar">
+      <a class="brand" href="admin.html" aria-label="Urban TMT Admin Panel">
+        <img class="brand-logo-img admin-logo-img" src="assets/urban-tmt-logo-cropped.png" alt="Urban TMT Steel Bars" />
+      </a>
+      <nav class="nav">
+        <a href="index.html#templates">Member Website</a>
+        <a href="#adminUpload">Upload Posters</a>
+        <a href="#adminLibrary">Manage Posters</a>
+      </nav>
+      <button class="top-action admin-logout" id="logoutBtn" type="button">Logout</button>
+    </header>
+
+    <main>
+      <section class="section admin-login" id="loginPanel" aria-labelledby="loginTitle">
+        <div class="admin-card">
+          <p class="eyebrow">Urban TMT company access</p>
+          <h1 id="loginTitle">Admin Login</h1>
+          <div class="field-group">
+            <label for="adminUser">Username</label>
+            <input id="adminUser" type="text" value="urbanadmin" autocomplete="username" />
+          </div>
+          <div class="field-group">
+            <label for="adminPassword">Password</label>
+            <input id="adminPassword" type="password" autocomplete="current-password" />
+          </div>
+          <button class="button primary" id="loginBtn" type="button">Login</button>
+          <p class="status" id="loginStatus" role="status"></p>
+        </div>
+      </section>
+
+      <section class="section admin-dashboard hidden" id="adminPanel">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">Poster administration</p>
+            <h1>Admin Dashboard</h1>
+          </div>
+          <p>Upload Urban TMT prepared artwork here. Dealers will see these posters on the member website.</p>
+        </div>
+
+        <div class="admin-layout">
+          <section class="panel" id="adminUpload" aria-labelledby="adminUploadTitle">
+            <h2 id="adminUploadTitle">Upload Prepared Poster</h2>
+            <div class="field-group">
+              <label for="posterTitle">Poster title</label>
+              <input id="posterTitle" type="text" placeholder="Example: Vishu Offer Poster" />
+            </div>
+            <div class="field-row">
+              <div class="field-group">
+                <label for="posterCategory">Category</label>
+                <select id="posterCategory">
+                  <option>Product Poster</option>
+                  <option>Festival Poster</option>
+                  <option>Dealer Poster</option>
+                  <option>Offer Poster</option>
+                  <option>Customer Poster</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="posterAccent">Dealer strip color</label>
+                <input id="posterAccent" type="color" value="#e53935" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="file-button" for="adminPosterFile">Choose poster image</label>
+              <input id="adminPosterFile" type="file" accept="image/png,image/jpeg" />
+            </div>
+            <button class="button primary" id="uploadPosterBtn" type="button">Upload to Member Website</button>
+            <p class="status" id="adminStatus" role="status"></p>
+          </section>
+
+          <section class="panel" id="adminLibrary" aria-labelledby="adminLibraryTitle">
+            <h2 id="adminLibraryTitle">Uploaded Posters</h2>
+            <div class="admin-poster-grid" id="adminPosterGrid"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="admin.js?v=49"></script>
+  </body>
+</html>

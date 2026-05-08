@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Urban TMT Dealer Poster Studio</title>
+    <link rel="stylesheet" href="styles.css?v=40" />
+  </head>
+  <body class="member-page">
+    <header class="topbar">
+      <a class="brand member-brand" href="#home" aria-label="Urban TMT Dealer Portal">
+        <img class="brand-logo-img" src="assets/urban-tmt-logo.png" alt="Urban TMT Steel Bars" />
+      </a>
+      <nav class="nav">
+        <a href="#home">Home</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <a class="top-action" href="#templates">Posters</a>
+    </header>
+
+    <main>
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <h1 id="hero-title">
+            <span>Strength In</span>
+            <span class="hero-highlight">Every Structure</span>
+          </h1>
+          <p>
+            Delivering premium quality steel solutions engineered for durability,
+            precision, and long-term performance across industries.
+          </p>
+          <div class="hero-dots" aria-hidden="true"><span></span><span></span></div>
+        </div>
+      </section>
+
+      <section class="section intro-grid" id="process">
+        <article>
+          <span class="step-number">01</span>
+          <h2>Browse</h2>
+          <p>Members see approved product, festival, dealer, and customer campaign poster images.</p>
+        </article>
+        <article>
+          <span class="step-number">02</span>
+          <h2>Select</h2>
+          <p>Dealers browse the poster library and select the artwork they want to use for promotion.</p>
+        </article>
+        <article>
+          <span class="step-number">03</span>
+          <h2>Generate</h2>
+          <p>The website adds store name and contact details below the poster and exports a PNG.</p>
+        </article>
+      </section>
+
+      <section class="section poster-showcase" id="templates" aria-labelledby="templates-title">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">Poster showcase</p>
+            <h2 id="templates-title">Prepared Poster Library</h2>
+          </div>
+          <p>
+            Dealers can choose any Urban TMT prepared poster here. The selected
+            poster stays locked, and store details are added below it.
+          </p>
+        </div>
+        <div class="template-grid" id="templateGrid"></div>
+      </section>
+
+      <section class="section studio" id="studio" aria-labelledby="studio-title">
+        <div class="section-heading">
+          <p class="eyebrow">Dealer personalization</p>
+          <h2 id="studio-title">Add Store Details Below Poster</h2>
+        </div>
+
+        <div class="studio-layout">
+          <aside class="panel controls" aria-label="Poster customization controls">
+            <div class="field-group">
+              <label for="templateSelect">Prepared poster</label>
+              <select id="templateSelect"></select>
+            </div>
+            <p class="selected-note" id="selectedPosterName">Selected: Urban TMT Strength</p>
+
+            <div class="field-group">
+              <label for="shopName">Store or dealer name</label>
+              <input id="shopName" type="text" maxlength="42" value="Shree Balaji Steel Traders" />
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="phone">Mobile number</label>
+                <input id="phone" type="tel" maxlength="20" value="+91 98765 43210" />
+              </div>
+              <div class="field-group">
+                <label for="city">City</label>
+                <input id="city" type="text" maxlength="26" value="Pune" />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="address">Store address</label>
+              <textarea id="address" maxlength="90">Main Road, Market Yard</textarea>
+            </div>
+
+            <div class="field-row">
+              <div class="field-group">
+                <label for="dealerCode">Dealer code</label>
+                <input id="dealerCode" type="text" maxlength="22" value="URB-PN-204" />
+              </div>
+              <div class="field-group">
+                <label for="accentColor">Dealer strip color</label>
+                <input id="accentColor" type="color" value="#e53935" />
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <label>
+                <input id="showDealerCode" type="checkbox" checked />
+                Show dealer code
+              </label>
+            </div>
+
+            <div class="actions">
+              <button class="button primary" id="downloadBtn" type="button">Download PNG</button>
+              <button class="button secondary" id="shareBtn" type="button">Share</button>
+            </div>
+            <a class="download-link" id="downloadLink" href="#" download="urban-tmt-poster.png" target="_blank">
+              Open generated poster image
+            </a>
+            <img class="download-preview" id="downloadPreview" alt="Generated poster download preview" />
+            <p class="status" id="shareStatus" role="status"></p>
+          </aside>
+
+          <section class="preview-shell hidden-preview" aria-label="Poster preview">
+            <div class="canvas-wrap">
+              <canvas id="posterCanvas" width="1080" height="1270"></canvas>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <a class="whatsapp-float" href="#studio" aria-label="Contact Urban TMT on WhatsApp">☎</a>
+
+    <footer class="footer">
+      <strong>Urban TMT Poster Studio</strong>
+      <span>Prepared company posters with dealer store details added below.</span>
+    </footer>
+
+    <script src="script.js?v=40"></script>
+    <script>
+      window.addEventListener('load', () => {
+        const canvas = document.getElementById('posterCanvas');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const status = document.getElementById('shareStatus');
+        document.addEventListener('click', (event) => {
+          const button = event.target.closest('.select-card[data-poster-id]');
+          if (!button) return;
+          const posterId = button.dataset.posterId;
+          if (typeof window.selectPoster === 'function') {
+            window.selectPoster(posterId, true);
+          }
+          document.querySelectorAll('.template-card').forEach((card) => {
+            card.classList.toggle('active', card.dataset.template === posterId);
+            const cardButton = card.querySelector('.select-card');
+            if (cardButton) {
+              cardButton.textContent = card.dataset.template === posterId ? 'Selected poster' : 'Select this poster';
+            }
+          });
+          const select = document.getElementById('templateSelect');
+          const selectedOption = select?.querySelector(`option[value="${CSS.escape(posterId)}"]`);
+          const selectedLabel = document.getElementById('selectedPosterName');
+          if (select) select.value = posterId;
+          if (selectedLabel && selectedOption) {
+            selectedLabel.textContent = `Selected: ${selectedOption.textContent.replace(' - Uploaded Poster', '').replace(' - Product Poster', '').replace(' - Dealer Poster', '').replace(' - Festival Poster', '').replace(' - Customer Poster', '')}`;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
