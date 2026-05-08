@@ -344,6 +344,39 @@ h1 {
   width: 18px;
 }
 
+.poster-intro-slide {
+  background:
+    linear-gradient(90deg, rgba(7, 17, 12, 0.96), rgba(7, 17, 12, 0.86)),
+    url('uploads/poster-1778231803561-Urban-TMT.jpg');
+  background-position: center;
+  background-size: cover;
+  color: #fff;
+  padding: clamp(54px, 8vw, 108px) clamp(18px, 6vw, 96px);
+}
+
+.poster-intro-inner {
+  max-width: 880px;
+}
+
+.poster-intro-slide h2 {
+  font-size: clamp(38px, 6vw, 76px);
+  line-height: 0.98;
+  margin: 0 0 24px;
+  max-width: 860px;
+  text-transform: uppercase;
+}
+
+.poster-intro-slide p {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: clamp(17px, 1.6vw, 22px);
+  line-height: 1.55;
+  max-width: 760px;
+}
+
+.poster-intro-slide .button {
+  margin-top: 16px;
+}
+
 .hero-actions,
 .actions {
   display: flex;
@@ -485,7 +518,8 @@ h1 {
 }
 
 #posterUpload,
-#adminPosterFile {
+#adminPosterFile,
+#dealerLogo {
   height: 1px;
   opacity: 0;
   padding: 0;
@@ -505,6 +539,54 @@ h1 {
   min-height: 46px;
   padding: 12px 18px;
   text-align: center;
+}
+
+.logo-upload-button {
+  background: #151a22;
+}
+
+.dealer-logo-preview {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: rgba(93, 102, 117, 0.72);
+  display: flex;
+  font-size: 13px;
+  font-weight: 800;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 10px;
+  position: relative;
+}
+
+.dealer-logo-preview img {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  height: 36px;
+  object-fit: contain;
+  width: 56px;
+}
+
+.dealer-logo-preview span {
+  flex: 1;
+  min-width: 0;
+}
+
+.remove-logo-button {
+  align-items: center;
+  background: #151a22;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  font-size: 12px;
+  font-weight: 900;
+  height: 28px;
+  place-items: center;
+  width: 28px;
 }
 
 .studio-layout {
@@ -556,6 +638,11 @@ textarea {
   min-height: 44px;
   padding: 10px 12px;
   width: 100%;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(93, 102, 117, 0.55);
 }
 
 textarea {
@@ -635,6 +722,11 @@ input[type='range'] {
   line-height: 1.45;
   margin: -6px 0 16px;
   padding: 10px 12px;
+}
+
+.poster-selector-field,
+.poster-selected-note {
+  display: none;
 }
 
 .download-link {

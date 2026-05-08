@@ -95,13 +95,14 @@ const samplePosters = [
 
 const state = {
   posterId: '',
-  shopName: 'Shree Balaji Steel Traders',
-  phone: '+91 98765 43210',
-  city: 'Pune',
-  address: 'Main Road, Market Yard',
-  dealerCode: 'URB-PN-204',
+  shopName: '',
+  phone: '',
+  city: '',
+  address: '',
+  dealerCode: '',
   accent: '#e53935',
   showDealerCode: true,
+  dealerLogo: null,
 };
 
 let posters = [];
@@ -119,6 +120,8 @@ const downloadBtn = document.getElementById('downloadBtn');
 const downloadLink = document.getElementById('downloadLink');
 const downloadPreview = document.getElementById('downloadPreview');
 const selectedPosterName = document.getElementById('selectedPosterName');
+const dealerLogoInput = document.getElementById('dealerLogo');
+const dealerLogoPreview = document.getElementById('dealerLogoPreview');
 let currentDownloadHref = '';
 let currentPreviewUrl = '';
 let downloadWorkerReady = null;
@@ -404,18 +407,49 @@ function drawDealerDetails(ctx, data, y) {
 
   ctx.textAlign = 'center';
   ctx.fillStyle = '#ffffff';
-  fitText(ctx, data.shopName || 'Your Store Name', CANVAS_WIDTH / 2, y + 72, 48, 900, '900');
+  const brandCenterX = drawDealerBrandLine(ctx, data, y + 72);
   ctx.font = '800 28px Arial, sans-serif';
-  ctx.fillText([data.city, data.phone].filter(Boolean).join('  |  '), CANVAS_WIDTH / 2, y + 115);
+  ctx.fillText([data.city, data.phone].filter(Boolean).join('  |  '), brandCenterX, y + 115);
   ctx.font = '700 22px Arial, sans-serif';
-  fitText(ctx, data.address || 'Store address', CANVAS_WIDTH / 2, y + 148, 22, 880, '700');
+  fitText(ctx, data.address || 'Store address', brandCenterX, y + 152, 22, 720, '700');
   if (data.showDealerCode && data.dealerCode) {
-    roundedRect(ctx, 390, y + 160, 300, 26, 5, '#ffffff');
+    roundedRect(ctx, brandCenterX - 150, y + 160, 300, 26, 5, '#ffffff');
     ctx.fillStyle = '#151a22';
     ctx.font = '800 17px Arial, sans-serif';
-    ctx.fillText(`Dealer Code: ${data.dealerCode}`, CANVAS_WIDTH / 2, y + 180);
+    ctx.fillText(`Dealer Code: ${data.dealerCode}`, brandCenterX, y + 180);
   }
   ctx.textAlign = 'left';
+}
+
+function drawDealerBrandLine(ctx, data, baselineY) {
+  const name = data.shopName || 'Your Store Name';
+  let fontSize = 48;
+  const hasLogo = Boolean(data.dealerLogo);
+  const logoWidth = hasLogo ? 330 : 0;
+  const logoHeight = hasLogo ? 128 : 0;
+  const logoCenterX = 270;
+  const logoCenterY = baselineY + 30;
+  const textCenterX = hasLogo ? 690 : CANVAS_WIDTH / 2;
+  const maxTextWidth = hasLogo ? 620 : 900;
+
+  ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+  while (ctx.measureText(name).width > maxTextWidth && fontSize > 28) {
+    fontSize -= 2;
+    ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+  }
+
+  const textWidth = ctx.measureText(name).width;
+  let x = textCenterX - textWidth / 2;
+
+  if (hasLogo) {
+    drawLogoContain(ctx, data.dealerLogo, logoCenterX - logoWidth / 2, logoCenterY - logoHeight / 2, logoWidth, logoHeight);
+  }
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(name, x, baselineY);
+  ctx.textAlign = 'center';
+  return textCenterX;
 }
 
 function bindEvents() {
@@ -445,6 +479,12 @@ function bindEvents() {
     state.showDealerCode = event.target.checked;
     renderPoster();
   });
+  dealerLogoInput?.addEventListener('change', uploadDealerLogo);
+  dealerLogoPreview?.addEventListener('click', (event) => {
+    const removeButton = event.target.closest('[data-remove-logo]');
+    if (!removeButton) return;
+    removeDealerLogo();
+  });
   downloadBtn.addEventListener('click', downloadPoster);
   document.getElementById('shareBtn').addEventListener('click', () => {
     sharePoster().catch(() => {
@@ -453,6 +493,41 @@ function bindEvents() {
   });
   document.getElementById('posterUpload')?.addEventListener('change', uploadPreparedPosters);
   document.getElementById('clearUploads')?.addEventListener('click', clearUploads);
+}
+
+function uploadDealerLogo(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.addEventListener('load', () => {
+    loadImage(
+      reader.result,
+      (img) => {
+        const trimmedLogo = trimLogoImage(img);
+        state.dealerLogo = trimmedLogo;
+        if (dealerLogoPreview) {
+          dealerLogoPreview.innerHTML = `<img src="${trimmedLogo.src}" alt="Uploaded store logo" /><span>${file.name}</span><button class="remove-logo-button" type="button" data-remove-logo aria-label="Remove uploaded logo">X</button>`;
+          dealerLogoPreview.classList.add('has-logo');
+        }
+        renderPoster();
+      },
+      () => {
+        if (dealerLogoPreview) dealerLogoPreview.textContent = 'Could not load logo. Try PNG or JPG.';
+      },
+    );
+  });
+  reader.readAsDataURL(file);
+}
+
+function removeDealerLogo() {
+  state.dealerLogo = null;
+  if (dealerLogoInput) dealerLogoInput.value = '';
+  if (dealerLogoPreview) {
+    dealerLogoPreview.textContent = 'No logo selected';
+    dealerLogoPreview.classList.remove('has-logo');
+  }
+  renderPoster();
 }
 
 function uploadPreparedPosters(event) {
@@ -508,8 +583,7 @@ async function downloadPoster(event) {
 
     const savedPoster = await savePosterOnServer(blob, fileName);
     if (savedPoster) {
-      shareStatus.textContent = `Saved PNG: ${savedPoster.fileName}`;
-      return;
+      shareStatus.textContent = `Preparing download: ${savedPoster.fileName}`;
     }
 
     const link = document.createElement('a');
@@ -520,7 +594,7 @@ async function downloadPoster(event) {
     document.body.appendChild(link);
     link.click();
     link.remove();
-    shareStatus.textContent = `Download ready: ${fileName}.`;
+    shareStatus.textContent = `Download started: ${fileName}.`;
   } catch (error) {
     shareStatus.textContent = 'Could not prepare the PNG. Please select the poster again and try download.';
   }
@@ -705,6 +779,56 @@ function loadImage(src, callback, onError) {
   img.src = src;
 }
 
+function trimLogoImage(img) {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth || img.width;
+  canvas.height = img.naturalHeight || img.height;
+  const trimCtx = canvas.getContext('2d');
+  trimCtx.drawImage(img, 0, 0);
+  const { width, height } = canvas;
+  const pixels = trimCtx.getImageData(0, 0, width, height).data;
+  let minX = width;
+  let minY = height;
+  let maxX = 0;
+  let maxY = 0;
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const index = (y * width + x) * 4;
+      const red = pixels[index];
+      const green = pixels[index + 1];
+      const blue = pixels[index + 2];
+      const alpha = pixels[index + 3];
+      const isWhite = red > 245 && green > 245 && blue > 245;
+      if (alpha > 10 && !isWhite) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+  }
+
+  if (minX > maxX || minY > maxY) return img;
+
+  const padding = 8;
+  minX = Math.max(0, minX - padding);
+  minY = Math.max(0, minY - padding);
+  maxX = Math.min(width - 1, maxX + padding);
+  maxY = Math.min(height - 1, maxY + padding);
+
+  const trimWidth = maxX - minX + 1;
+  const trimHeight = maxY - minY + 1;
+  const output = document.createElement('canvas');
+  output.width = trimWidth;
+  output.height = trimHeight;
+  output.getContext('2d').drawImage(canvas, minX, minY, trimWidth, trimHeight, 0, 0, trimWidth, trimHeight);
+
+  const trimmed = new Image();
+  trimmed.src = output.toDataURL('image/png');
+  return trimmed;
+}
+
 function drawImageCover(ctx, img, x, y, width, height) {
   const scale = Math.max(width / img.width, height / img.height);
   const drawWidth = img.width * scale;
@@ -719,6 +843,18 @@ function drawImageContain(ctx, img, x, y, width, height) {
   const drawWidth = img.width * scale;
   const drawHeight = img.height * scale;
   ctx.drawImage(img, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
+}
+
+function drawLogoContain(ctx, img, x, y, width, height) {
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.32)';
+  ctx.shadowBlur = 12;
+  ctx.shadowOffsetY = 4;
+  const scale = Math.min(width / img.width, height / img.height);
+  const drawWidth = img.width * scale;
+  const drawHeight = img.height * scale;
+  ctx.drawImage(img, x + (width - drawWidth) / 2, y + (height - drawHeight) / 2, drawWidth, drawHeight);
+  ctx.restore();
 }
 
 function placeholderArtwork(ctx, poster) {
